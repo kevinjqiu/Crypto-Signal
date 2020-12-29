@@ -8,4 +8,7 @@ build:
 	docker tag ${DOCKER_IMAGE_NAME}:${GIT_BRANCH} ${DOCKER_IMAGE_NAME}:latest
 
 run:
-	docker run -it --rm -v $PWD/config.yml:/app/config.yml ${DOCKER_IMAGE_NAME}
+	docker run -it --rm -v $$(pwd)/config.yml:/app/config.yml ${DOCKER_IMAGE_NAME}
+
+dev:
+	docker run -it --rm -v $$(pwd)/config.yml:/app/config.yml -v $$(pwd)/app:/app ${DOCKER_IMAGE_NAME} bash

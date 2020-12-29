@@ -136,15 +136,20 @@ class ExchangeInterface():
         for exchange in exchanges:
             exchange_markets[exchange] = self.exchanges[exchange].load_markets()
 
-            if markets:
-                curr_markets = exchange_markets[exchange]
+            # if markets:
+            curr_markets = exchange_markets[exchange]
 
-                # Only retrieve markets the users specified
-                exchange_markets[exchange] = { key: curr_markets[key] for key in curr_markets if key in markets }
+            my_markets = []
+            for m in markets:
+                my_markets.extend([
+                    market for market in curr_markets if m in market
+                ])
+            # Only retrieve markets the users specified
+            exchange_markets[exchange] = { key: curr_markets[key] for key in curr_markets if key in my_markets }
 
-                for market in markets:
-                    if market not in exchange_markets[exchange]:
-                        self.logger.info('%s has no market %s, ignoring.', exchange, market)
+            for market in markets:
+                if market not in exchange_markets[exchange]:
+                    self.logger.info('%s has no market %s, ignoring.', exchange, market)
 
             time.sleep(self.exchanges[exchange].rateLimit / 1000)
 

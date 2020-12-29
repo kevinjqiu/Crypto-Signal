@@ -98,6 +98,8 @@ class Behaviour():
                     new_result[exchange][market_pair]
                 )
 
+                new_result[exchange][market_pair]['yield'] = self._get_pnl(exchange, market_pair)
+
                 if output_mode in self.output:
                     output_data = deepcopy(new_result[exchange][market_pair])
                     print(
@@ -265,6 +267,34 @@ class Behaviour():
                 })
         return results
 
+    def _get_pnl(self, exchange, market_pair):
+        result = {
+            '1m': {
+                'data': None,
+                'amount': None,
+                'percent': None,
+            },
+            '5m': {
+                'data': None,
+                'amount': None,
+                'percent': None,
+            }
+        }
+
+        for interval in ('1m', '5m'):
+            historical_data = self._get_historical_data(
+                    market_pair,
+                    exchange,
+                    interval,
+                )
+            result[interval]['data'] = historical_data
+            if len(historical_data) == 0:
+                continue
+            opening_price = historical_data[0][1]
+            closing_price = historical_data[-1][4]
+            result[interval]['amount'] = closing_price - opening_price
+            result[interval]['percent'] = 100 * closing_price / opening_price
+        return result
 
     def _get_historical_data(self, market_pair, exchange, candle_period):
         """Gets a list of OHLCV data for the given pair and exchange.

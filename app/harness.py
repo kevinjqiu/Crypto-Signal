@@ -298,6 +298,9 @@ def to_postgres(results, exchange, market_pair):
                 yield_result['5m']['percent'],
             ])
 
+            if all(v is None for v in args):
+                return
+
             cur.execute(
                 'INSERT INTO indicators ('
                 'time, analysis_id, exchange, base, quote, '

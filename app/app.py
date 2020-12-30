@@ -13,6 +13,7 @@ from conf import Configuration
 from exchange import ExchangeInterface
 from notification import Notifier
 from behaviour import Behaviour
+from harness import Harness
 
 def main():
     """Initializes the application
@@ -35,10 +36,13 @@ def main():
         notifier
     )
 
-    while True:
-        behaviour.run(settings['market_pairs'], settings['output_mode'])
-        logger.info("Sleeping for %s seconds", settings['update_interval'])
-        time.sleep(settings['update_interval'])
+    harness = Harness(config, exchange_interface, notifier)
+    harness.run()
+
+    # while True:
+    #     behaviour.run(settings['market_pairs'], settings['output_mode'])
+    #     logger.info("Sleeping for %s seconds", settings['update_interval'])
+    #     time.sleep(settings['update_interval'])
 
 if __name__ == "__main__":
     try:

@@ -14,6 +14,18 @@ from tenacity import RetryError
 from analysis import StrategyAnalyzer
 from outputs import Output
 
+import contextlib
+import datetime
+
+@contextlib.contextmanager
+def timing(operation_name):
+    start_time = datetime.datetime.utcnow()
+    yield
+    elapsed = datetime.datetime.utcnow() - start_time
+    print('[%s] Elapsed: %s' % (operation_name, elapsed))
+
+
+
 class Behaviour():
     """Default analyzer which gives users basic trading information.
     """
@@ -290,7 +302,7 @@ class Behaviour():
             result[interval]['data'] = historical_data
             if len(historical_data) == 0:
                 continue
-            opening_price = historical_data[0][1]
+            opening_price = historical_data[-1][1]
             closing_price = historical_data[-1][4]
             result[interval]['amount'] = closing_price - opening_price
             result[interval]['percent'] = 100 * closing_price / opening_price

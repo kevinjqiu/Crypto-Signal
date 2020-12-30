@@ -136,14 +136,17 @@ class ExchangeInterface():
         for exchange in exchanges:
             exchange_markets[exchange] = self.exchanges[exchange].load_markets()
 
-            # if markets:
             curr_markets = exchange_markets[exchange]
 
             my_markets = []
-            for m in markets:
-                my_markets.extend([
-                    market for market in curr_markets if m in market
-                ])
+            if markets:
+                for m in markets:
+                    my_markets.extend([
+                        market for market in curr_markets if m in market
+                    ])
+            else:
+                my_markets.extend(list(curr_markets.keys()))
+
             # Only retrieve markets the users specified
             exchange_markets[exchange] = { key: curr_markets[key] for key in curr_markets if key in my_markets }
 

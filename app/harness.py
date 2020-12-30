@@ -193,6 +193,11 @@ class Harness():
         for exchange in market_data:
             for pair in market_data[exchange]:
                 base, quote = pair.split('/')
+
+                if not requested_market_pairs:
+                    ret.append((exchange, pair))
+                    continue
+
                 for requested_market_pair in requested_market_pairs:
                     if base == requested_market_pair or quote == requested_market_pair:
                         ret.append((exchange, pair))
@@ -201,7 +206,6 @@ class Harness():
     def run(self):
         market_pairs = self.config.settings['market_pairs']
         market_data = self.exchange_interface.get_exchange_markets(markets=market_pairs)
-        exchanges = list(self.config.exchanges.keys())
 
         filtered_market_pairs = self._get_filtered_market_pairs(market_data, market_pairs)
 
